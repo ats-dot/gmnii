@@ -1,5 +1,6 @@
 package com.ats_tsalatsah.app
 
+import android.app.ActivityOptions
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -342,8 +343,10 @@ class RunnerService : Service() {
             return false
         }
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
         return try {
-            startActivity(i)
+            val opsi = ActivityOptions.makeCustomAnimation(this, 0, 0).toBundle()
+            startActivity(i, opsi)
             RunnerState.log("Buka $pkg")
             true
         } catch (e: Exception) {
