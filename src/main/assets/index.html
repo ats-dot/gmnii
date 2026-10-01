@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cabang otomatis</title>
+<style>
+:root{--bg:#000000;--c1:#111111;--c2:#1A1A1A;--txt:#FFFFFF;--mut:#888888;--ln:#222222;--ac:#FFFFFF;--ac-tx:#000000}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font:14px/1.4 system-ui,-apple-system,sans-serif}
+body{display:flex;flex-direction:column}
+
+header{display:flex;align-items:center;gap:14px;padding:20px 20px 16px}
+.h-logo svg{width:40px;height:40px;border-radius:12px}
+.h-title{flex:1;font-size:18px;font-weight:600;margin:0;letter-spacing:-0.3px}
+.h-ver{font-size:11px;color:var(--mut);font-weight:600;background:var(--c1);padding:4px 10px;border-radius:12px;border:1px solid var(--ln)}
+
+main{flex:1;position:relative;overflow:hidden}
+.tab{position:absolute;inset:0;overflow-y:auto;padding:0 20px 120px;opacity:0;transform:translateY(10px);pointer-events:none;transition:all .3s ease}
+.tab.on{opacity:1;transform:none;pointer-events:auto}
+
+/* Cabang Tab */
+.hero{background:#E5E5E5;border-radius:28px;padding:24px;color:#111;margin-bottom:24px}
+.hc-top{display:flex;justify-content:space-between;align-items:flex-start}
+.hc-title{font-size:26px;font-weight:700;line-height:1.1;margin:0;letter-spacing:-0.5px}
+.hc-icon{width:44px;height:44px;color:#999}
+.hc-mid{display:flex;align-items:center;gap:12px;margin-top:24px}
+.hc-num{font-size:56px;font-weight:500;line-height:1;letter-spacing:-2px}
+.hc-lbl{font-size:14px;font-weight:600;line-height:1.2}
+.hc-bot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:16px}
+.hc-sub{font-size:13px;color:#666;font-weight:500}
+.hc-btn{background:transparent;border:1px solid #999;border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:#111;display:flex;align-items:center;cursor:pointer;transition:.2s}
+.hc-btn:active{transform:scale(0.95);background:#ccc}
+
+.sec-lbl{font-size:11px;font-weight:700;color:var(--mut);letter-spacing:1px;margin:0 0 12px 12px;text-transform:uppercase}
+
+.btn{width:100%;border:none;border-radius:24px;padding:18px;font-size:15px;font-weight:600;margin-bottom:12px;transition:.2s;cursor:pointer}
+.btn-m{background:var(--ac);color:var(--ac-tx)}
+.btn-m:active{transform:scale(.98);background:#e0e0e0}
+.btn-s{background:var(--c2);color:var(--mut)}
+.btn-s:active{transform:scale(.98);background:#222}
+.btn:disabled{opacity:.5;pointer-events:none}
+
+.st-card{background:var(--c2);border-radius:24px;padding:20px;margin-bottom:16px}
+.st-val{font-size:22px;font-weight:600;color:#fff;margin-bottom:4px}
+.st-desc{font-size:13px;color:var(--mut);margin-bottom:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-trk{background:var(--c1);height:6px;border-radius:3px;overflow:hidden}
+.st-fil{background:var(--ac);height:100%;width:0%;transition:width .3s ease}
+
+/* Other Tabs */
+.card{background:var(--c1);border:1px solid var(--ln);border-radius:24px;padding:20px;margin-bottom:16px}
+.card h2{font-size:12px;letter-spacing:1px;text-transform:uppercase;color:var(--mut);font-weight:700;margin:0 0 16px}
+
+input[type=text],input[type=number]{background:var(--c2);border:1px solid var(--ln);color:var(--txt);border-radius:16px;padding:14px 16px;font:15px system-ui;width:100%;outline:none}
+input:focus{border-color:#444}
+
+input[type=checkbox]{appearance:none;width:24px;height:24px;border-radius:8px;border:2px solid #444;background:transparent;position:relative;flex:none}
+input[type=checkbox]:checked{background:#fff;border-color:#fff}
+input[type=checkbox]:checked::after{content:"";position:absolute;left:7px;top:3px;width:5px;height:10px;border:solid #000;border-width:0 2px 2px 0;transform:rotate(45deg)}
+
+.row{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--ln)}
+.row:last-child{border-bottom:none;padding-bottom:0}
+.nm{flex:1;min-width:0}
+.nm b{display:block;font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nm span{display:block;color:var(--mut);font-size:12px;margin-top:2px}
+
+.chip{padding:5px 12px;border-radius:12px;font-size:12px;font-weight:600;background:var(--c2);color:var(--mut)}
+.chip.ok{background:#fff;color:#000}
+
+.set{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--ln);gap:12px}
+.set:last-child{border-bottom:none;padding-bottom:0}
+.lab{font-size:13px;color:var(--mut);margin:14px 0 8px}
+
+pre{margin:0;white-space:pre-wrap;word-break:break-all;font:12px/1.5 ui-monospace,monospace;color:#ccc}
+#logwrap{max-height:50vh;overflow-y:auto}
+
+.b-sm{background:var(--c2);color:var(--txt);border:none;padding:8px 14px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer}
+.b-sm:active{background:#333}
+
+.btns{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+
+/* Nav */
+nav{position:fixed;left:16px;right:16px;bottom:16px;display:flex;background:rgba(17,17,17,0.9);backdrop-filter:blur(10px);border:1px solid var(--ln);border-radius:30px;padding:6px;z-index:10}
+nav button{flex:1;border:0;background:transparent;color:var(--mut);font:600 12px system-ui;padding:12px 0;border-radius:24px;transition:.3s}
+nav button.on{background:#fff;color:#000}
+nav button svg { display:block; margin: 0 auto 4px; width: 20px; height: 20px; }
+nav button span { display: block; font-size: 10px; font-weight: 600; }
+
+#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:#fff;color:#000;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:20}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+</style>
+</head>
+<body>
+<header>
+    <div class="h-logo">
+        <svg width="42" height="42" viewBox="0 0 108 108" aria-hidden="true">
+            <rect width="108" height="108" rx="26" fill="#0D47A1"/>
+            <g fill="none" stroke="#fff" stroke-linejoin="miter">
+                <path d="M36,38 L72,38 L84,54 L54,84 L24,54 Z" stroke-width="5"/>
+                <path d="M62,45 H46 V51 H62 V57 H46" stroke-width="3.5"/>
+                <path d="M54,60 V72 M49,67 L54,73 L59,67" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+        </svg>
+    </div>
+    <h1 class="h-title">Cabang otomatis</h1>
+    <div class="h-ver">v1.1</div>
+</header>
+
+<main>
+<section id="t-cabang" class="tab on">
+    <div class="hero">
+        <div class="hc-top">
+            <h2 class="hc-title">Aktivitas<br>Cabang.</h2>
+            <svg class="hc-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M6 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M18 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M8 10l8-3"></path><path d="M8 14l8 3"></path></svg>
+        </div>
+        <div class="hc-mid">
+            <div class="hc-num" id="rt">0</div>
+            <div class="hc-lbl">progres<br>server</div>
+        </div>
+        <div class="hc-bot">
+            <div class="hc-sub" id="ring">0 server dari 0 apk</div>
+            <button class="hc-btn" onclick="document.querySelector('[data-t=set]').click()">Atur Target <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px"><path d="M18 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M6 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M18 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M8 10l8-3"></path><path d="M8 14l8 3"></path></svg></button>
+        </div>
+    </div>
+
+    <div class="sec-lbl">KONTROL</div>
+    <button class="btn btn-m" id="btnStart">Mulai Putaran 1</button>
+    <button class="btn btn-s" id="btnStop" disabled>Hentikan Proses</button>
+
+    <div class="st-card">
+        <div class="sec-lbl" style="margin:0 0 8px 0;color:#666">STATUS</div>
+        <div class="st-val" id="rf">Siap.</div>
+        <div class="st-desc" id="nowp">Menunggu pemilihan aplikasi di tab 'Apps'.</div>
+        <div class="st-trk"><div class="st-fil" id="arc"></div></div>
+    </div>
+</section>
+
+<section id="t-apps" class="tab">
+    <div class="card">
+        <input type="text" id="q" placeholder="Cari nama atau paket">
+        <div class="btns">
+            <button class="b-sm" id="bPilih">Pilih hasil</button>
+            <button class="b-sm" id="bKosong">Kosongkan</button>
+            <button class="b-sm" id="bFilt"></button>
+        </div>
+        <div class="lab">Pilih N pertama dari daftar di bawah</div>
+        <div class="btns" style="align-items:center">
+            <input type="number" id="nPertama" inputmode="numeric" placeholder="mis. 30" style="width:100px;padding:10px 14px">
+            <button class="b-sm" id="bN" style="padding:10px 14px">Pilih</button>
+        </div>
+        <div class="lab" id="jml" style="margin-top:16px;color:#fff;font-weight:600">0 dipilih</div>
+    </div>
+    <div class="card" id="list" style="padding:8px 20px"></div>
+</section>
+
+<section id="t-log" class="tab">
+    <div class="card"><h2>Zone ID terbaca</h2><pre id="zlist">Belum ada.</pre></div>
+    <div class="card"><h2>Log aktivitas</h2><div id="logwrap"><pre id="logfull">Belum ada aktivitas.</pre></div></div>
+</section>
+
+<section id="t-set" class="tab">
+    <div class="card">
+        <h2>Pengaturan Proses</h2>
+        <div class="lab">Target server (Zone ID berbeda)</div>
+        <input type="number" id="target" inputmode="numeric" placeholder="mis. 20">
+        <div class="lab">Jeda putaran 1 (milidetik)</div><input type="number" id="d1" inputmode="numeric">
+        <div class="lab">Jeda putaran 2 (milidetik)</div><input type="number" id="d2" inputmode="numeric">
+        <div class="set" style="margin-top:12px"><span>Kembali ke app saat selesai</span><input type="checkbox" id="back"></div>
+        <div class="lab">Filter pencarian default</div><input type="text" id="filt">
+    </div>
+    <div class="card">
+        <h2>Izin Aplikasi</h2>
+        <div class="set"><div>Tampil di atas app lain<br><div class="chip" id="iz1" style="margin-top:6px">...</div></div><button class="b-sm" id="bOv">Atur</button></div>
+        <div class="set"><div>Abaikan optimasi baterai<br><div class="chip" id="iz2" style="margin-top:6px">...</div></div><button class="b-sm" id="bBat">Atur</button></div>
+        <div class="set"><div>Akses Shizuku<br><div class="chip" id="iz3" style="margin-top:6px">...</div></div><button class="b-sm" id="bShz">Atur</button></div>
+    </div>
+</section>
+</main>
+
+<nav id="nav">
+    <button data-t="cabang" class="on">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M6 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M18 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path><path d="M8 10l8-3"></path><path d="M8 14l8 3"></path></svg>
+        <span>Cabang</span>
+    </button>
+    <button data-t="apps">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Apps</span>
+    </button>
+    <button data-t="log">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+        <span>Aktivitas</span>
+    </button>
+    <button data-t="set">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <span>Setelan</span>
+    </button>
+</nav>
+<div id="toast"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const K='cabang_otomatis_v2';
+let S={sel:{},d1:5520,d2:5300,back:true,filt:'com.revanstor',target:20};
+try{Object.assign(S,JSON.parse(localStorage.getItem(K)||'{}'))}catch(e){}
+if(S.d1===5000&&S.d2===7000){S.d1=5520;S.d2=5300}
+
+function simpan(){try{localStorage.setItem(K,JSON.stringify(S))}catch(e){}}
+const ada=typeof App!=='undefined';
+let apps=[];
+
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2200)}
+
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x===b));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.id==='t-'+b.dataset.t));
+});
+
+function daftar(){
+  const q=$('q').value.trim().toLowerCase();
+  return apps.filter(a=>!q||a.n.toLowerCase().includes(q)||a.p.toLowerCase().includes(q));
+}
+function terpilih(){return apps.filter(a=>S.sel[a.p])}
+function ringkas(){
+  const n=terpilih().length;
+  $('jml').textContent=n+' dipilih';
+  if($('btnStart').disabled===false){ 
+    $('ring').textContent='0 server dari '+n+' apk';
+  }
+}
+function gambar(){
+  $('list').innerHTML=daftar().map(a=>{
+    const on=!!S.sel[a.p];
+    return '<div class="row" data-p="'+esc(a.p)+'"><input type="checkbox"'+(on?' checked':'')+'><div class="nm"><b>'+esc(a.n)+'</b><span>'+esc(a.p)+'</span></div></div>';
+  }).join('')||'<div style="color:#888;padding:10px 0">Tidak ada aplikasi.</div>';
+  ringkas();
+}
+
+$('list').addEventListener('change',e=>{
+  if(e.target.type!=='checkbox')return;
+  S.sel[e.target.closest('.row').dataset.p]=e.target.checked;
+  simpan();ringkas();
+});
+$('list').addEventListener('click',e=>{
+  const nm=e.target.closest('.nm');if(!nm)return;
+  const cb=nm.parentNode.querySelector('input[type=checkbox]');cb.checked=!cb.checked;
+  cb.dispatchEvent(new Event('change',{bubbles:true}));
+});
+
+$('q').oninput=gambar;
+$('bPilih').onclick=()=>{daftar().forEach(a=>S.sel[a.p]=true);simpan();gambar()};
+$('bKosong').onclick=()=>{S.sel={};simpan();gambar()};
+$('bFilt').onclick=()=>{$('q').value=S.filt;gambar()};
+$('bN').onclick=()=>{
+  const n=parseInt($('nPertama').value);
+  if(!n||n<1){toast('Isi angka dulu');return}
+  S.sel={};daftar().slice(0,n).forEach(a=>S.sel[a.p]=true);simpan();gambar();
+};
+
+$('d1').value=S.d1;$('d2').value=S.d2;$('back').checked=!!S.back;$('filt').value=S.filt;$('target').value=S.target;
+$('bFilt').textContent='Filter: '+S.filt;
+$('d1').onchange=()=>{S.d1=Math.max(0,parseInt($('d1').value)||0);$('d1').value=S.d1;simpan()};
+$('d2').onchange=()=>{S.d2=Math.max(0,parseInt($('d2').value)||0);$('d2').value=S.d2;simpan()};
+$('back').onchange=()=>{S.back=$('back').checked;simpan()};
+$('filt').onchange=()=>{S.filt=$('filt').value.trim();$('bFilt').textContent='Filter: '+S.filt;simpan()};
+$('target').onchange=()=>{S.target=Math.max(1,parseInt($('target').value)||1);$('target').value=S.target;simpan();ambil()};
+
+$('btnStart').onclick=()=>{
+  if(!ada){toast('Buka lewat aplikasi');return}
+  const p=terpilih();
+  if(!p.length){toast('Pilih aplikasi dulu di tab Apps');return}
+  const t=Math.max(1,parseInt($('target').value)||1);
+  S.target=t;$('target').value=t;simpan();
+  if(t>p.length)toast('Target '+t+' lebih besar dari apk dipilih ('+p.length+')');
+  const r=App.start(JSON.stringify({pkgs:p.map(a=>a.p),d1:S.d1,d2:S.d2,back:S.back,target:t}));
+  if(r!=='ok')toast(r);else setTimeout(ambil,300);
+};
+$('btnStop').onclick=()=>{if(ada){App.stop();toast('Menghentikan...')}};
+$('bOv').onclick=()=>{if(ada)App.overlay()};
+$('bBat').onclick=()=>{if(ada)App.battery()};
+$('bShz').onclick=()=>{if(ada)App.shizuku()};
+
+let kunci='';
+function tampil(s){
+  const tot=(s.running||s.total)?s.total:S.target;
+  const pct=tot?Math.min(1,s.done/tot):0;
+  $('arc').style.width=(pct*100)+'%';
+  $('rt').textContent=s.done;
+  $('rf').textContent=s.fase+'.';
+  $('btnStart').disabled=s.running;
+  $('btnStop').disabled=!s.running;
+  
+  let pk="Menunggu pemilihan aplikasi di tab 'Apps'.";
+  if(s.running){
+    pk="Memproses...";
+    for(let i=s.logs.length-1;i>=0;i--){
+      const m=s.logs[i].match(/ Buka (\S+)$/);
+      if(m){pk='Membuka '+m[1];break}
+    }
+  } else if(s.done>0){
+    pk="Selesai.";
+  } else if (terpilih().length>0) {
+    pk="Siap memulai dengan "+terpilih().length+" aplikasi.";
+  }
+  
+  $('nowp').textContent=pk;
+  $('ring').textContent=s.done+' server dari '+tot+' apk';
+  
+  const k=s.logs.length+'|'+(s.logs[s.logs.length-1]||'');
+  if(k!==kunci){
+    kunci=k;
+    $('logfull').textContent=s.logs.length?s.logs.join('\n'):'Belum ada aktivitas.';
+    const w=$('logwrap');w.scrollTop=w.scrollHeight;
+  }
+  const z=Object.entries(s.zones).sort((a,b)=>(+a[1])-(+b[1]));
+  $('zlist').textContent=z.length?z.map(x=>x[1]+'   '+x[0]).join('\n'):'Belum ada.';
+}
+
+function ambil(){
+  if(!ada){tampil({running:false,done:0,total:0,fase:'Siap',logs:[],zones:{}});return}
+  try{tampil(JSON.parse(App.status()))}catch(e){}
+}
+
+function chip(id,ok,ya,tidak){const e=$(id);e.textContent=ok?ya:tidak;e.className='chip'+(ok?' ok':'')}
+function cekIzin(){
+  if(!ada)return;
+  let z;try{z=JSON.parse(App.izin())}catch(e){return}
+  chip('iz1',z.overlay,'Aktif','Belum aktif');
+  chip('iz2',z.baterai,'Aktif','Belum aktif');
+  const t=['Belum jalan','Belum diizinkan','Siap'][z.shizuku];
+  chip('iz3',z.shizuku===2,t,t);
+}
+window.segarkan=function(){ambil();cekIzin()};
+
+if(ada){try{apps=JSON.parse(App.apps())}catch(e){apps=[]}}
+gambar();ambil();cekIzin();
+setInterval(ambil,500);
+setInterval(cekIzin,3000);
+</script>
+</body>
+</html>
